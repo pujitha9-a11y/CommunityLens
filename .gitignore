@@ -1,0 +1,9 @@
+community.db
+app_backup.py
+reset_admin.py
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+uploads/

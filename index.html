@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CommunityLens</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f4f7fb;
+            color: #1e293b;
+        }
+
+        header {
+            background: #0f766e;
+            color: white;
+            padding: 20px 8%;
+        }
+
+        header h2 {
+            margin: 0;
+        }
+
+        main {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        main h1 {
+            font-size: 42px;
+            margin-bottom: 16px;
+        }
+
+        main p {
+            font-size: 18px;
+            line-height: 1.6;
+            max-width: 650px;
+            margin: 0 auto 28px;
+        }
+
+        button {
+            background: #0f766e;
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #115e59;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2>CommunityLens</h2>
+    </header>
+
+    <main>
+        <h1>Make Your Community Better</h1>
+
+        <p>
+            Share your concerns and suggestions.
+            Our platform helps identify common problems,
+            prioritize community needs, and discover solutions.
+        </p>
+
+        <button onclick="showFeedbackForm()">
+    Share Your Feedback
+</button>
+
+<div id="feedbackForm" style="display: none; margin: 30px auto; max-width: 450px; text-align: left;">
+    <h2>Submit Your Feedback</h2>
+
+    <form onsubmit="submitFeedback(event)">
+        <label for="feedback">Describe your problem:</label>
+        <textarea id="feedback" required
+            placeholder="Example: Wi-Fi is slow in the library."
+            style="width: 100%; height: 100px; margin: 10px 0; padding: 10px; box-sizing: border-box;"></textarea>
+
+        <label for="category">Choose a category:</label>
+        <select id="category" style="width: 100%; padding: 10px; margin: 10px 0;">
+            <option>Infrastructure</option>
+            <option>Internet and Technology</option>
+            <option>Transport</option>
+            <option>Food and Canteen</option>
+            <option>Other</option>
+        </select>
+
+        <button type="submit">Submit Feedback</button>
+    </form>
+
+    <p id="message"></p>
+</div>
+
+<script>
+    function showFeedbackForm() {
+        document.getElementById("feedbackForm").style.display = "block";
+    }
+
+    async function submitFeedback(event) {
+        event.preventDefault();
+
+        const description = document.getElementById("feedback").value.trim();
+        const category = document.getElementById("category").value;
+        const message = document.getElementById("message");
+
+        try {
+            const response = await fetch("/submit-feedback", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    description: description,
+                    category: category
+                })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || "Could not save feedback.");
+            }
+
+            message.textContent = result.message;
+            document.querySelector("#feedbackForm form").reset();
+
+        } catch (error) {
+            message.textContent =
+                "Could not save feedback. Make sure the Python server is running.";
+        }
+    }
+</script>
+    </main>
+
+    <footer>
+        CommunityLens | Listen. Understand. Improve.
+    </footer>
+
+</body>
+</html>
